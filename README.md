@@ -52,6 +52,8 @@ rolling backtest runs in about 20 seconds.
 | `stock_bond_regimes.py` | DCC-GARCH on SPY and TLT since 2003: year-by-year stock/bond correlation and returns (Result 4) |
 | `fhs_var.py` | Filtered Historical Simulation on top of DCC-GARCH (portfolio-level and full multivariate versions) |
 | `fhs_backtest_data.py` | Backtests Historical, EWMA-FHS, DCC-Gaussian and DCC-FHS at 95% and 99% — see [README_fhs.md](README_fhs.md) |
+| `validate_garch_vs_arch.py` | Independent verification of the GARCH(1,1) estimator against the `arch` package (needs `pip install arch`) |
+| `VALIDATION_garch_vs_arch.md` | Write-up of that verification, in the format of the implementation-verification section of a model validation report |
 | `risk_tests.py` | Kupiec coverage test and Christoffersen independence test (same as in var-backtester) |
 
 ## Usage
@@ -64,6 +66,7 @@ python dcc_backtest_data.py              # SPY / TLT / GLD, equal weight, 95% Va
 python dcc_backtest_data.py --tickers SPY TLT --weights 0.6 0.4 --confidence 0.99
 python stock_bond_regimes.py             # stock/bond correlation by year, 2003 onward
 python fhs_backtest_data.py --end 2026-10-01   # filtered historical simulation vs Gaussian VaR
+python validate_garch_vs_arch.py --end 2026-10-01   # verify GARCH(1,1) against arch (pip install arch)
 ```
 
 ```python
