@@ -50,6 +50,8 @@ rolling backtest runs in about 20 seconds.
 | `dcc_garch.py` | Core model: `fit_dcc_garch`, `dcc_filter`, `forecast_next`, `portfolio_var`. Running it validates the model on simulated data with a known correlation jump |
 | `dcc_backtest_data.py` | Downloads real prices (yfinance) and backtests Static, EWMA, CCC-GARCH and DCC-GARCH portfolio VaR |
 | `stock_bond_regimes.py` | DCC-GARCH on SPY and TLT since 2003: year-by-year stock/bond correlation and returns (Result 4) |
+| `fhs_var.py` | Filtered Historical Simulation on top of DCC-GARCH (portfolio-level and full multivariate versions) |
+| `fhs_backtest_data.py` | Backtests Historical, EWMA-FHS, DCC-Gaussian and DCC-FHS at 95% and 99% — see [README_fhs.md](README_fhs.md) |
 | `risk_tests.py` | Kupiec coverage test and Christoffersen independence test (same as in var-backtester) |
 
 ## Usage
@@ -61,6 +63,7 @@ python dcc_garch.py                      # validation on simulated data
 python dcc_backtest_data.py              # SPY / TLT / GLD, equal weight, 95% VaR
 python dcc_backtest_data.py --tickers SPY TLT --weights 0.6 0.4 --confidence 0.99
 python stock_bond_regimes.py             # stock/bond correlation by year, 2003 onward
+python fhs_backtest_data.py --end 2026-10-01   # filtered historical simulation vs Gaussian VaR
 ```
 
 ```python
@@ -213,11 +216,14 @@ correlations before the 2000s, but this data starts in 2003 and cannot confirm t
   used in practice.
 - **The static model fails when correlations drift.** On the 60/40 portfolio its
   violations cluster in time (independence test p = 0.0035), so it is rejected, while
-  the dynamic models are not.
+  the dynamic models are not. (This is for the 2018-2026 backtest; over the longer
+  2013-2026 sample in [README_fhs.md](README_fhs.md), the dynamic models also show
+  clustering for this portfolio at 95%.)
 - **At 99%, every model is rejected** (about 2% violations against 1% expected). All
   of them assume normally distributed shocks, which understates fat tails. DCC models
-  how correlations move, not the shape of the tails. Student-t innovations or filtered
-  historical simulation are the natural next step.
+  how correlations move, not the shape of the tails. Filtered historical simulation is
+  one fix; [README_fhs.md](README_fhs.md) shows how far it gets (it lowers the violation
+  rate but does not fully fix it).
 - These tests judge each model against its own target. They are not formal pairwise
   comparisons between models, so small differences in violation rates should not be
   over-read.

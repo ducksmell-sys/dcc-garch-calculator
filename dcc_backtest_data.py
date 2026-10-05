@@ -33,10 +33,10 @@ MODELS = ["Static", "EWMA", "CCC-GARCH", "DCC-GARCH"]
 COLORS = {"Static": "#8C8C8C", "EWMA": "#DD8452", "CCC-GARCH": "#4C72B0", "DCC-GARCH": "#C44E52"}
 
 
-def load_returns(tickers, start):
+def load_returns(tickers, start, end=None):
     import yfinance as yf
 
-    prices = yf.download(tickers, start=start, progress=False, auto_adjust=True)["Close"][tickers]
+    prices = yf.download(tickers, start=start, end=end, progress=False, auto_adjust=True)["Close"][tickers]
     return prices.pct_change().dropna()
 
 
